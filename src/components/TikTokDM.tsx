@@ -1,10 +1,13 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ChevronLeft, Phone, Video, Plus, Send } from 'lucide-react';
+import ButterflyBackground from './ButterflyBackground';
 
 export default function TikTokDM() {
   return (
     <footer className="relative w-full bg-[#08060f] px-4 pb-12 pt-8">
+      <ButterflyBackground variant="footer" />
+
       <div className="mx-auto max-w-md">
         <motion.p
           initial={{ opacity: 0 }}

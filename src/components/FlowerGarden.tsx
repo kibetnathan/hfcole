@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import Flower2D from './Flower2D';
+import ButterflyBackground from './ButterflyBackground';
 
 export interface FlowerItem {
   type: 'flower' | 'message';
@@ -99,6 +100,8 @@ const flowerWidth = (size: number) => `min(${size}px, ${Math.round((size / 375) 
 export default function FlowerGarden() {
   return (
     <section id="garden" className="relative w-full overflow-hidden bg-[#0a0618]">
+      <ButterflyBackground variant="garden" />
+
       <div className="relative mx-auto max-w-md px-6 pt-14 pb-10 text-center">
         <h3 className="font-mono text-[10px] tracking-[0.4em] uppercase text-purple-soft/60 mb-2">
           keep scrolling

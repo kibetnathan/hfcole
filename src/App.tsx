@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Lock, ChevronDown } from 'lucide-react';
 import FlowerScene3D from './components/FlowerScene3D';
+import ButterflyBackground from './components/ButterflyBackground';
 import FlowerGarden from './components/FlowerGarden';
 import PhotoGallery from './components/PhotoGallery';
 import TikTokDM from './components/TikTokDM';
@@ -113,6 +114,7 @@ export default function App() {
           >
             <section className="relative h-svh min-h-[560px] w-full flex items-center justify-center overflow-hidden">
               <FlowerScene3D />
+              <ButterflyBackground variant="hero" className="z-[5]" />
 
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
