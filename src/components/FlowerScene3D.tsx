@@ -52,12 +52,25 @@ function Field() {
 export default function FlowerScene3D() {
   return (
     <div className="absolute inset-0 z-0">
-      <Canvas camera={{ position: [0, 0.6, 7.5], fov: 50 }} dpr={[1, 2]}>
+      <Canvas shadows camera={{ position: [0, 0.8, 7.5], fov: 50 }} dpr={[1, 2]}>
         <color attach="background" args={['#0a0618']} />
         <fog attach="fog" args={['#0a0618', 8, 14]} />
-        <ambientLight intensity={0.6} />
-        <pointLight position={[4, 5, 6]} intensity={1.2} color="#a78bfa" />
-        <pointLight position={[-4, -3, 4]} intensity={0.6} color="#7c3aed" />
+        <ambientLight intensity={0.25} />
+        <hemisphereLight args={['#e9d5ff', '#1e1b4b', 0.35]} />
+        <directionalLight
+          position={[3, 5, 2]}
+          intensity={1.5}
+          castShadow
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-camera-left={-6}
+          shadow-camera-right={6}
+          shadow-camera-top={6}
+          shadow-camera-bottom={-6}
+        />
+        <directionalLight position={[-4, 2, -3]} intensity={0.6} color="#a78bfa" />
+        <pointLight position={[4, 5, 6]} intensity={0.3} color="#a78bfa" />
+        <pointLight position={[-4, -3, 4]} intensity={0.2} color="#7c3aed" />
 
         <Float speed={1.6} rotationIntensity={0.4} floatIntensity={0.8}>
           <Field />
