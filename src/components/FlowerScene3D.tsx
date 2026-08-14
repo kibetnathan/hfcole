@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { Float, Stars } from '@react-three/drei';
 import Flower3D from './Flower3D';
 
-const field = [
+const field: { position: [number, number, number]; scale: number; seed: number }[] = [
   { position: [-2.3, -0.9, 0.3], scale: 0.85, seed: 20 },
   { position: [-0.6, -1.2, 0.1], scale: 1.0, seed: 80 },
   { position: [1.4, -0.6, 0.6], scale: 0.75, seed: 140 },
