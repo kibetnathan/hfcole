@@ -1,22 +1,49 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Float, Stars } from '@react-three/drei';
 import Flower3D from './Flower3D';
 
-const field: { position: [number, number, number]; scale: number; seed: number }[] = [
-  { position: [-2.3, -0.9, 0.3], scale: 0.85, seed: 20 },
-  { position: [-0.6, -1.2, 0.1], scale: 1.0, seed: 80 },
-  { position: [1.4, -0.6, 0.6], scale: 0.75, seed: 140 },
-  { position: [-1.4, 0.5, -0.6], scale: 1.15, seed: 40 },
-  { position: [0.4, 0.9, -0.4], scale: 1.25, seed: 100 },
-  { position: [2.3, 0.7, 0.2], scale: 0.9, seed: 180 },
-];
+const PETAL_COLORS = ['#c4b5fd', '#d8b4fe', '#a78bfa', '#8b5cf6', '#e9d5ff'];
+const DEEP_COLORS = ['#8b5cf6', '#7c3aed', '#6d28d9', '#a855f7', '#5b21b6'];
+
+interface FieldFlower {
+  position: [number, number, number];
+  scale: number;
+  petalCount: number;
+  petalColor: string;
+  deepColor: string;
+  seed: number;
+}
 
 function Field() {
+  const flowers = useMemo<FieldFlower[]>(() => {
+    const arr: FieldFlower[] = [];
+    const count = 34;
+    let guard = 0;
+    while (arr.length < count && guard++ < 2000) {
+      const x = (Math.random() * 2 - 1) * 3.2;
+      const y = (Math.random() * 2 - 1) * 2.8 + 0.3;
+      const z = (Math.random() * 2 - 1) * 1.6;
+      const radius = Math.hypot(x, y);
+      if (radius < 1.1 && Math.abs(z) < 0.9) continue;
+
+      const depth = 1 - (z + 1.6) / 3.2;
+      arr.push({
+        position: [x, y, z],
+        scale: 0.55 + depth * 0.85 + Math.random() * 0.2,
+        petalCount: 5 + Math.floor(Math.random() * 4),
+        petalColor: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
+        deepColor: DEEP_COLORS[Math.floor(Math.random() * DEEP_COLORS.length)],
+        seed: Math.floor(Math.random() * 360),
+      });
+    }
+    return arr;
+  }, []);
+
   return (
     <group>
-      {field.map((f, i) => (
-        <Flower3D key={i} position={f.position} scale={f.scale} seed={f.seed} />
+      {flowers.map((f, i) => (
+        <Flower3D key={i} {...f} />
       ))}
     </group>
   );
