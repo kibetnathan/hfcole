@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Terminal, Lock, Heart as HeartIcon, Sparkles, ChevronDown } from 'lucide-react';
-import TextHeart from './components/TextHeart';
+import { Lock, ChevronDown } from 'lucide-react';
 import FlowerScene3D from './components/FlowerScene3D';
 import FlowerGarden from './components/FlowerGarden';
 import TikTokDM from './components/TikTokDM';
