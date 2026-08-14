@@ -4,6 +4,7 @@ import { Terminal, Lock, Heart as HeartIcon, Sparkles, ChevronDown } from 'lucid
 import TextHeart from './components/TextHeart';
 import FlowerScene3D from './components/FlowerScene3D';
 import FlowerGarden from './components/FlowerGarden';
+import TikTokDM from './components/TikTokDM';
 
 const Typewriter = ({ text, delay = 50, onComplete }: { text: string, delay?: number, onComplete?: () => void }) => {
   const [currentText, setCurrentText] = useState("");
@@ -162,6 +163,7 @@ export default function App() {
             </section>
 
             <FlowerGarden />
+            <TikTokDM />
           </motion.div>
         )}
       </AnimatePresence>
