@@ -61,3 +61,27 @@
   transform-origin: bottom center;
   animation: flower-sway 3.5s ease-in-out infinite;
 }
+
+@keyframes butterfly-flap {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(0.28); }
+}
+
+.butterfly-wing {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: butterfly-flap 1.3s ease-in-out infinite;
+}
+
+@keyframes butterfly-float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-12px) rotate(4deg); }
+}
+
+.butterfly-float {
+  animation: butterfly-float 6s ease-in-out infinite;
+}
+
+.butterfly-glow {
+  filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.45)) drop-shadow(0 0 16px rgba(124, 58, 237, 0.25));
+}

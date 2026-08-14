@@ -39,6 +39,30 @@ const pinAt = (i: number) => {
   return { x, y };
 };
 
+function makeRng(seed: number) {
+  let s = seed * 9301 + 49297;
+  return () => {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+}
+
+const butterflyRng = makeRng(20260819);
+
+const BUTTERFLIES = Array.from({ length: 14 }, () => {
+  const left = 24 + butterflyRng() * 50;
+  const top = 4 + butterflyRng() * 90;
+  const size = 30 + butterflyRng() * 42;
+  const mirror = butterflyRng() < 0.5;
+  const opacity = 0.3 + butterflyRng() * 0.3;
+  const floatDelay = butterflyRng() * 5;
+  const floatDuration = 5 + butterflyRng() * 4;
+  const flapDuration = 1.1 + butterflyRng() * 0.7;
+  return { left, top, size, mirror, opacity, floatDelay, floatDuration, flapDuration };
+});
+
+const bflyWidth = (size: number) => `min(${size}px, ${Math.round((size / 375) * 100)}vw)`;
+
 function PhotoFrame({
   src,
   alt,
@@ -194,6 +218,56 @@ function PhotoFrame({
   );
 }
 
+function Butterfly({
+  flapDuration = 1.3,
+  style,
+}: {
+  flapDuration?: number;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <svg viewBox="0 0 100 100" className="butterfly-glow block" style={style} aria-hidden="true">
+      <defs>
+        <linearGradient id="bfly-up" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#c4b5fd" />
+          <stop offset="100%" stopColor="#7c3aed" />
+        </linearGradient>
+        <linearGradient id="bfly-lo" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#a78bfa" />
+          <stop offset="100%" stopColor="#5b21b6" />
+        </linearGradient>
+      </defs>
+
+      {/* left wings (flap group) */}
+      <g className="butterfly-wing" style={{ animationDuration: `${flapDuration}s` }}>
+        <path d="M47 40 C 33 22 9 21 7 39 C 5 55 21 61 46 54 Z" fill="url(#bfly-up)" />
+        <path d="M46 54 C 33 61 19 73 26 86 C 32 97 47 89 47 66 Z" fill="url(#bfly-lo)" />
+        <path d="M47 42 C 38 36 28 33 18 34 M46 48 C 34 48 22 52 13 56" stroke="#5b21b6" strokeWidth="1" fill="none" opacity="0.5" />
+        <path d="M46 60 C 36 68 29 78 29 84" stroke="#5b21b6" strokeWidth="1" fill="none" opacity="0.5" />
+        <circle cx="24" cy="40" r="2" fill="#4c1d95" opacity="0.45" />
+        <circle cx="30" cy="52" r="1.4" fill="#4c1d95" opacity="0.45" />
+      </g>
+
+      {/* right wings (flap group) */}
+      <g className="butterfly-wing" style={{ animationDuration: `${flapDuration}s` }}>
+        <path d="M53 40 C 67 22 91 21 93 39 C 95 55 79 61 54 54 Z" fill="url(#bfly-up)" />
+        <path d="M54 54 C 67 61 81 73 74 86 C 68 97 53 89 53 66 Z" fill="url(#bfly-lo)" />
+        <path d="M53 42 C 62 36 72 33 82 34 M54 48 C 66 48 78 52 87 56" stroke="#5b21b6" strokeWidth="1" fill="none" opacity="0.5" />
+        <path d="M54 60 C 64 68 71 78 71 84" stroke="#5b21b6" strokeWidth="1" fill="none" opacity="0.5" />
+        <circle cx="76" cy="40" r="2" fill="#4c1d95" opacity="0.45" />
+        <circle cx="70" cy="52" r="1.4" fill="#4c1d95" opacity="0.45" />
+      </g>
+
+      {/* body + antennae (no flap) */}
+      <ellipse cx="50" cy="52" rx="3.4" ry="16" fill="#5b21b6" stroke="#4c1d95" strokeWidth="0.6" />
+      <circle cx="50" cy="33" r="3" fill="#7c3aed" />
+      <path d="M48 31 C 43 22 40 17 33 15 M52 31 C 57 22 60 17 67 15" stroke="#a855f7" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+      <circle cx="33" cy="15" r="1.1" fill="#c4b5fd" />
+      <circle cx="67" cy="15" r="1.1" fill="#c4b5fd" />
+    </svg>
+  );
+}
+
 export default function PhotoGallery() {
   const pins = PHOTOS.map((_, i) => pinAt(i));
 
@@ -222,6 +296,30 @@ export default function PhotoGallery() {
       </div>
 
       <div className="relative w-full h-[calc(min(280px,40vw)*13.4)]">
+        {/* drifting butterflies in the background */}
+        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+          {BUTTERFLIES.map((b, i) => (
+            <div
+              key={`bfly-${i}`}
+              className="butterfly-float absolute"
+              style={{
+                left: `${b.left}%`,
+                top: `${b.top}%`,
+                opacity: b.opacity,
+                animationDelay: `${b.floatDelay}s`,
+                animationDuration: `${b.floatDuration}s`,
+              }}
+            >
+              <div style={{ transform: b.mirror ? "scaleX(-1)" : undefined }}>
+                <Butterfly
+                  flapDuration={b.flapDuration}
+                  style={{ width: bflyWidth(b.size), display: "block" }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
         <svg
           className="absolute inset-0 h-full w-full"
           viewBox="0 0 100 100"
