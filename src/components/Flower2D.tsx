@@ -1,7 +1,6 @@
 import React from 'react';
 
 interface Flower2DProps {
-  size?: number;
   rotation?: number;
   petalCount?: number;
   petalColor?: string;
@@ -19,7 +18,6 @@ const defaultPalette = {
 };
 
 export default function Flower2D({
-  size = 100,
   rotation = 0,
   petalCount = 6,
   petalColor = defaultPalette.petal,
@@ -34,8 +32,7 @@ export default function Flower2D({
 
   return (
     <svg
-      width={size}
-      height={size}
+      width="100%"
       viewBox="-50 -50 100 100"
       style={{ transform: `rotate(${rotation}deg)`, opacity }}
       className={className}

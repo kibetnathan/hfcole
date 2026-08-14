@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Terminal, Lock, Heart as HeartIcon, Sparkles } from 'lucide-react';
+import { Terminal, Lock, Heart as HeartIcon, Sparkles, ChevronDown } from 'lucide-react';
 import TextHeart from './components/TextHeart';
 import FlowerScene3D from './components/FlowerScene3D';
+import FlowerGarden from './components/FlowerGarden';
 
 const Typewriter = ({ text, delay = 50, onComplete }: { text: string, delay?: number, onComplete?: () => void }) => {
   const [currentText, setCurrentText] = useState("");
@@ -144,7 +145,23 @@ export default function App() {
               <div className="absolute bottom-8 right-4 sm:right-8 text-[10px] font-mono text-white/10 uppercase tracking-widest">
                 flower_reveal // success
               </div>
+
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2.4 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  document.getElementById('garden')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 text-purple-soft/50 hover:text-purple-soft transition-colors animate-bounce"
+                aria-label="Scroll to more flowers"
+              >
+                <ChevronDown size={28} />
+              </motion.button>
             </section>
+
+            <FlowerGarden />
           </motion.div>
         )}
       </AnimatePresence>
