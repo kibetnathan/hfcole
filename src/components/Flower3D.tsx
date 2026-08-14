@@ -156,6 +156,94 @@ function createLeafGeometry(length: number, width: number) {
   return geo;
 }
 
+// ---- shared assets ------------------------------------------------------
+
+// Geometries/materials that are identical across every flower live at
+// module scope so 34 flowers reuse a handful of references instead of
+// building their own geometry + material per mesh on each mount.
+const FIXED = {
+  centerGeometry: new THREE.SphereGeometry(0.22, 16, 12),
+  stamenFilamentGeometry: new THREE.CylinderGeometry(0.01, 0.014, 0.26, 5),
+  stamenAntherGeometry: new THREE.SphereGeometry(0.032, 8, 6),
+  leafGeometryA: createLeafGeometry(0.55, 0.24),
+  leafGeometryB: createLeafGeometry(0.4, 0.18),
+  stamenFilamentMaterial: new THREE.MeshStandardMaterial({
+    color: "#fef3c7",
+    roughness: 0.6,
+  }),
+  stamenAntherMaterial: new THREE.MeshStandardMaterial({
+    color: "#f59e0b",
+    roughness: 0.4,
+  }),
+  stemMaterial: new THREE.MeshStandardMaterial({
+    color: "#4c1d95",
+    roughness: 0.7,
+  }),
+  leafAMaterial: new THREE.MeshStandardMaterial({
+    color: "#6d28d9",
+    roughness: 0.65,
+    side: THREE.DoubleSide,
+  }),
+  leafBMaterial: new THREE.MeshStandardMaterial({
+    color: "#5b21b6",
+    roughness: 0.65,
+    side: THREE.DoubleSide,
+  }),
+};
+
+interface PaletteAssets {
+  outerPetalGeometry: THREE.BufferGeometry;
+  innerPetalGeometry: THREE.BufferGeometry;
+  outerPetalMaterial: THREE.MeshPhysicalMaterial;
+  innerPetalMaterial: THREE.MeshPhysicalMaterial;
+  centerMaterial: THREE.MeshStandardMaterial;
+}
+
+// petal geometries carry per-palette vertex colors and the petal/center
+// materials depend on the palette, so cache those keyed by color pair.
+const paletteCache = new Map<string, PaletteAssets>();
+
+function getPaletteAssets(petalColor: string, deepColor: string): PaletteAssets {
+  const key = `${petalColor}|${deepColor}`;
+  let assets = paletteCache.get(key);
+  if (!assets) {
+    assets = {
+      outerPetalGeometry: createPetalGeometry(1.0, 0.62, 0.35, 0.12, deepColor, "#f3e8ff"),
+      innerPetalGeometry: createPetalGeometry(0.62, 0.42, 0.22, 0.16, deepColor, petalColor),
+      outerPetalMaterial: new THREE.MeshPhysicalMaterial({
+        vertexColors: true,
+        roughness: 0.45,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.4,
+        sheen: 0.5,
+        sheenColor: new THREE.Color(petalColor),
+        side: THREE.DoubleSide,
+      }),
+      innerPetalMaterial: new THREE.MeshPhysicalMaterial({
+        vertexColors: true,
+        roughness: 0.5,
+        clearcoat: 0.25,
+        clearcoatRoughness: 0.45,
+        sheen: 0.4,
+        sheenColor: new THREE.Color(petalColor),
+        emissive: new THREE.Color(deepColor),
+        emissiveIntensity: 0.05,
+        side: THREE.DoubleSide,
+      }),
+      centerMaterial: new THREE.MeshStandardMaterial({
+        color: deepColor,
+        roughness: 0.4,
+        emissive: deepColor,
+        emissiveIntensity: 0.35,
+      }),
+    };
+    paletteCache.set(key, assets);
+  }
+  return assets;
+}
+
+// ---- component ----------------------------------------------------------
+
 export default function Flower3D({
   position,
   scale = 1,
@@ -168,6 +256,7 @@ export default function Flower3D({
   const petalsRef = useRef<THREE.Group>(null!);
 
   const rng = useMemo(() => makeRng(seed * 1000 + 1), [seed]);
+  const assets = getPaletteAssets(petalColor, deepColor);
 
   // static per-flower lean/yaw/roll so petals don't all face the camera
   const baseTilt = useMemo<[number, number, number]>(() => {
@@ -177,34 +266,6 @@ export default function Flower3D({
     return [lean, yaw, roll];
   }, [rng]);
 
-  // outer, larger, more open petals
-  const outerPetalGeometry = useMemo(
-    () => createPetalGeometry(1.0, 0.62, 0.35, 0.12, deepColor, "#f3e8ff"),
-    [deepColor],
-  );
-  // inner, smaller, more upright petals for depth/fullness
-  const innerPetalGeometry = useMemo(
-    () => createPetalGeometry(0.62, 0.42, 0.22, 0.16, deepColor, petalColor),
-    [deepColor, petalColor],
-  );
-
-  const centerGeometry = useMemo(
-    () => new THREE.SphereGeometry(0.22, 16, 12),
-    [],
-  );
-  const stamenFilamentGeometry = useMemo(
-    () => new THREE.CylinderGeometry(0.01, 0.014, 0.26, 5),
-    [],
-  );
-  const stamenAntherGeometry = useMemo(
-    () => new THREE.SphereGeometry(0.032, 8, 6),
-    [],
-  );
-
-  const leafGeometryA = useMemo(() => createLeafGeometry(0.55, 0.24), []);
-  const leafGeometryB = useMemo(() => createLeafGeometry(0.4, 0.18), []);
-
-  // gently curved stem instead of a straight cylinder
   const stemGeometry = useMemo(() => {
     const sway = (rng() - 0.5) * 0.12;
     const curve = new THREE.CatmullRomCurve3([
@@ -268,109 +329,70 @@ export default function Flower3D({
             {outerPetals.map(({ angle, tilt, key }) => (
               <mesh
                 key={key}
-                geometry={outerPetalGeometry}
+                geometry={assets.outerPetalGeometry}
+                material={assets.outerPetalMaterial}
                 position={[0, 0.06, 0]}
                 rotation={[tilt, 0, (angle * Math.PI) / 180]}
                 castShadow
                 receiveShadow
-              >
-                <meshPhysicalMaterial
-                  vertexColors
-                  roughness={0.45}
-                  clearcoat={0.3}
-                  clearcoatRoughness={0.4}
-                  sheen={0.5}
-                  sheenColor={petalColor}
-                  side={THREE.DoubleSide}
-                />
-              </mesh>
+              />
             ))}
 
             {innerPetals.map(({ angle, tilt, key }) => (
               <mesh
                 key={key}
-                geometry={innerPetalGeometry}
+                geometry={assets.innerPetalGeometry}
+                material={assets.innerPetalMaterial}
                 position={[0, 0.05, 0]}
                 rotation={[tilt, 0, (angle * Math.PI) / 180]}
-                castShadow
                 receiveShadow
-              >
-                <meshPhysicalMaterial
-                  vertexColors
-                  roughness={0.5}
-                  clearcoat={0.25}
-                  clearcoatRoughness={0.45}
-                  sheen={0.4}
-                  sheenColor={petalColor}
-                  emissive={deepColor}
-                  emissiveIntensity={0.05}
-                  side={THREE.DoubleSide}
-                />
-              </mesh>
+              />
             ))}
 
             {stamens.map(({ angle, outTilt, len, key }) => (
               <group key={key} rotation={[0, 0, (angle * Math.PI) / 180]}>
                 <mesh
-                  geometry={stamenFilamentGeometry}
+                  geometry={FIXED.stamenFilamentGeometry}
+                  material={FIXED.stamenFilamentMaterial}
                   scale={[1, len, 1]}
                   position={[0, 0.13 * len, 0]}
                   rotation={[outTilt, 0, 0]}
-                  castShadow
-                >
-                  <meshStandardMaterial color="#fef3c7" roughness={0.6} />
-                </mesh>
+                  receiveShadow
+                />
                 <mesh
-                  geometry={stamenAntherGeometry}
+                  geometry={FIXED.stamenAntherGeometry}
+                  material={FIXED.stamenAntherMaterial}
                   position={[0, 0.26 * len, 0.03 * len]}
                   rotation={[outTilt, 0, 0]}
-                  castShadow
-                >
-                  <meshStandardMaterial color="#f59e0b" roughness={0.4} />
-                </mesh>
+                  receiveShadow
+                />
               </group>
             ))}
 
-            <mesh geometry={centerGeometry} castShadow>
-              <meshStandardMaterial
-                color={deepColor}
-                roughness={0.4}
-                emissive={deepColor}
-                emissiveIntensity={0.35}
-              />
-            </mesh>
+            <mesh geometry={FIXED.centerGeometry} material={assets.centerMaterial} castShadow />
           </group>
 
-          <mesh geometry={stemGeometry} position={[0, -0.2, 0]} receiveShadow>
-            <meshStandardMaterial color="#4c1d95" roughness={0.7} />
-          </mesh>
+          <mesh
+            geometry={stemGeometry}
+            material={FIXED.stemMaterial}
+            position={[0, -0.2, 0]}
+            receiveShadow
+          />
 
           <mesh
-            geometry={leafGeometryA}
+            geometry={FIXED.leafGeometryA}
+            material={FIXED.leafAMaterial}
             position={[0.05, -0.7, 0.02]}
             rotation={[0.3, 0.5, -0.7]}
-            castShadow
             receiveShadow
-          >
-            <meshStandardMaterial
-              color="#6d28d9"
-              roughness={0.65}
-              side={THREE.DoubleSide}
-            />
-          </mesh>
+          />
           <mesh
-            geometry={leafGeometryB}
+            geometry={FIXED.leafGeometryB}
+            material={FIXED.leafBMaterial}
             position={[-0.06, -1.05, -0.02]}
             rotation={[0.25, -0.6, 0.65]}
-            castShadow
             receiveShadow
-          >
-            <meshStandardMaterial
-              color="#5b21b6"
-              roughness={0.65}
-              side={THREE.DoubleSide}
-            />
-          </mesh>
+          />
         </group>
       </group>
     </group>

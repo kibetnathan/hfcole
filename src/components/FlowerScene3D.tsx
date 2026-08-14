@@ -1,10 +1,16 @@
 import React, { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Float, Stars } from '@react-three/drei';
+import { Stars } from '@react-three/drei';
 import Flower3D from './Flower3D';
 
-const PETAL_COLORS = ['#c4b5fd', '#d8b4fe', '#a78bfa', '#8b5cf6', '#e9d5ff'];
-const DEEP_COLORS = ['#8b5cf6', '#7c3aed', '#6d28d9', '#a855f7', '#5b21b6'];
+const PALETTES = [
+  { petal: '#c4b5fd', deep: '#8b5cf6' },
+  { petal: '#d8b4fe', deep: '#7c3aed' },
+  { petal: '#a78bfa', deep: '#6d28d9' },
+  { petal: '#e9d5ff', deep: '#a855f7' },
+  { petal: '#a78bfa', deep: '#5b21b6' },
+  { petal: '#c4b5fd', deep: '#7c3aed' },
+];
 
 interface FieldFlower {
   position: [number, number, number];
@@ -28,12 +34,13 @@ function Field() {
       if (radius < 1.1 && Math.abs(z) < 0.9) continue;
 
       const depth = 1 - (z + 1.6) / 3.2;
+      const palette = PALETTES[Math.floor(Math.random() * PALETTES.length)];
       arr.push({
         position: [x, y, z],
         scale: 0.55 + depth * 0.85 + Math.random() * 0.2,
         petalCount: 5 + Math.floor(Math.random() * 4),
-        petalColor: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
-        deepColor: DEEP_COLORS[Math.floor(Math.random() * DEEP_COLORS.length)],
+        petalColor: palette.petal,
+        deepColor: palette.deep,
         seed: Math.floor(Math.random() * 360),
       });
     }
@@ -52,7 +59,12 @@ function Field() {
 export default function FlowerScene3D() {
   return (
     <div className="absolute inset-0 z-0">
-      <Canvas shadows camera={{ position: [0, 0.8, 7.5], fov: 50 }} dpr={[1, 2]}>
+      <Canvas
+        shadows
+        dpr={[1, 1.5]}
+        gl={{ powerPreference: 'high-performance' }}
+        camera={{ position: [0, 0.8, 7.5], fov: 50 }}
+      >
         <color attach="background" args={['#0a0618']} />
         <fog attach="fog" args={['#0a0618', 8, 14]} />
         <ambientLight intensity={0.25} />
@@ -61,22 +73,21 @@ export default function FlowerScene3D() {
           position={[3, 5, 2]}
           intensity={1.5}
           castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-          shadow-camera-left={-6}
-          shadow-camera-right={6}
-          shadow-camera-top={6}
-          shadow-camera-bottom={-6}
+          shadow-bias={-0.0005}
+          shadow-mapSize-width={1024}
+          shadow-mapSize-height={1024}
+          shadow-camera-left={-5}
+          shadow-camera-right={5}
+          shadow-camera-top={5}
+          shadow-camera-bottom={-5}
         />
         <directionalLight position={[-4, 2, -3]} intensity={0.6} color="#a78bfa" />
         <pointLight position={[4, 5, 6]} intensity={0.3} color="#a78bfa" />
         <pointLight position={[-4, -3, 4]} intensity={0.2} color="#7c3aed" />
 
-        <Float speed={1.6} rotationIntensity={0.4} floatIntensity={0.8}>
-          <Field />
-        </Float>
+        <Field />
 
-        <Stars radius={80} depth={40} count={1200} factor={3} saturation={0} fade speed={1} />
+        <Stars radius={80} depth={40} count={500} factor={3} saturation={0} fade speed={1} />
       </Canvas>
     </div>
   );
