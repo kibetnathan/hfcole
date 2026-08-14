@@ -1,21 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Lock, ChevronDown } from 'lucide-react';
-import FlowerScene3D from './components/FlowerScene3D';
-import ButterflyBackground from './components/ButterflyBackground';
-import FlowerGarden from './components/FlowerGarden';
-import PhotoGallery from './components/PhotoGallery';
-import TikTokDM from './components/TikTokDM';
+import React, { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Lock, ChevronDown } from "lucide-react";
+import FlowerScene3D from "./components/FlowerScene3D";
+import ButterflyBackground from "./components/ButterflyBackground";
+import FlowerGarden from "./components/FlowerGarden";
+import PhotoGallery from "./components/PhotoGallery";
+import TikTokDM from "./components/TikTokDM";
 
-const Typewriter = ({ text, delay = 50, onComplete }: { text: string, delay?: number, onComplete?: () => void }) => {
+const Typewriter = ({
+  text,
+  delay = 50,
+  onComplete,
+}: {
+  text: string;
+  delay?: number;
+  onComplete?: () => void;
+}) => {
   const [currentText, setCurrentText] = useState("");
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
     if (index < text.length) {
       const timeout = setTimeout(() => {
-        setCurrentText(prev => prev + text[index]);
-        setIndex(prev => prev + 1);
+        setCurrentText((prev) => prev + text[index]);
+        setIndex((prev) => prev + 1);
       }, delay);
       return () => clearTimeout(timeout);
     } else if (onComplete) {
@@ -27,24 +35,24 @@ const Typewriter = ({ text, delay = 50, onComplete }: { text: string, delay?: nu
 };
 
 export default function App() {
-  const [stage, setStage] = useState<'console' | 'reveal'>('console');
+  const [stage, setStage] = useState<"console" | "reveal">("console");
   const [consoleFinished, setConsoleFinished] = useState(false);
 
   const handleReveal = useCallback(() => {
-    if (stage === 'console' && consoleFinished) {
-      setStage('reveal');
+    if (stage === "console" && consoleFinished) {
+      setStage("reveal");
     }
   }, [stage, consoleFinished]);
 
   return (
-    <div 
+    <div
       onClick={handleReveal}
-      className={`relative min-h-screen w-full flex items-center justify-center bg-[#08060f] selection:bg-purple-deep/30 ${stage === 'console' && consoleFinished ? 'cursor-pointer' : ''}`}
+      className={`relative min-h-screen w-full flex items-center justify-center bg-[#08060f] selection:bg-purple-deep/30 ${stage === "console" && consoleFinished ? "cursor-pointer" : ""}`}
     >
       <div className="scanline" />
-      
+
       <AnimatePresence mode="wait">
-        {stage === 'console' ? (
+        {stage === "console" ? (
           <motion.div
             key="console"
             initial={{ opacity: 0 }}
@@ -55,23 +63,23 @@ export default function App() {
             <div className="space-y-2">
               <div className="flex gap-2 text-purple-soft/60">
                 <span>[system]</span>
-                <Typewriter 
-                  text="Initializing heart.PROTOCOL_v2.0..." 
-                  delay={30} 
+                <Typewriter
+                  text="Initializing heart.PROTOCOL_v2.0..."
+                  delay={30}
                   onComplete={() => setConsoleFinished(true)}
                 />
               </div>
-              
+
               <div className="flex gap-2 h-6">
                 <span>[status]</span>
                 {consoleFinished && (
-                    <motion.span 
-                        initial={{ opacity: 0 }} 
-                        animate={{ opacity: 1 }} 
-                        className="text-green-400"
-                    >
-                        READY
-                    </motion.span>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-green-400"
+                  >
+                    READY
+                  </motion.span>
                 )}
               </div>
 
@@ -84,20 +92,25 @@ export default function App() {
                   <p className="text-white/40 italic">
                     {">"} One encrypted package found for you.
                   </p>
-                  
+
                   <button
                     id="decrypt-button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setStage('reveal');
+                      setStage("reveal");
                     }}
                     className="group flex items-center gap-3 px-6 py-3 border border-purple-deep/30 bg-purple-deep/5 hover:bg-purple-deep/10 text-purple-soft transition-all duration-300 pointer-events-auto"
                   >
-                    <Lock size={16} className="group-hover:rotate-12 transition-transform" />
-                    <span className="font-mono tracking-widest uppercase text-xs">Decrypt Message</span>
+                    <Lock
+                      size={16}
+                      className="group-hover:rotate-12 transition-transform"
+                    />
+                    <span className="font-mono tracking-widest uppercase text-xs">
+                      Decrypt Message
+                    </span>
                     <span className="terminal-cursor" />
                   </button>
-                  
+
                   <p className="text-[10px] text-white/20 animate-pulse">
                     (or just click anywhere)
                   </p>
@@ -114,7 +127,6 @@ export default function App() {
           >
             <section className="relative h-svh min-h-[560px] w-full flex items-center justify-center overflow-hidden">
               <FlowerScene3D />
-              <ButterflyBackground variant="hero" className="z-[5]" />
 
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -130,7 +142,7 @@ export default function App() {
                 <motion.button
                   onClick={(e) => {
                     e.stopPropagation();
-                    setStage('console');
+                    setStage("console");
                   }}
                   className="text-white/20 hover:text-white/60 transition-colors uppercase text-[10px] tracking-widest font-mono"
                 >
@@ -155,7 +167,9 @@ export default function App() {
                 transition={{ delay: 2.4 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  document.getElementById('garden')?.scrollIntoView({ behavior: 'smooth' });
+                  document
+                    .getElementById("garden")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 text-purple-soft/50 hover:text-purple-soft transition-colors animate-bounce"
                 aria-label="Scroll to more flowers"
@@ -173,4 +187,3 @@ export default function App() {
     </div>
   );
 }
-

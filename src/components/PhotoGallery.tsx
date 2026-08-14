@@ -83,10 +83,24 @@ function PhotoFrame({
         strokeWidth="1.4"
         strokeLinecap="round"
       />
-      <circle cx="50" cy="5" r="2.3" fill="#c4b5fd" stroke="#7c3aed" strokeWidth="0.6" />
+      <circle
+        cx="50"
+        cy="5"
+        r="2.3"
+        fill="#c4b5fd"
+        stroke="#7c3aed"
+        strokeWidth="0.6"
+      />
 
       {/* charcoal card */}
-      <rect x="0" y="0" width="100" height="124" rx="3" fill={`url(#${charcoal})`} />
+      <rect
+        x="0"
+        y="0"
+        width="100"
+        height="124"
+        rx="3"
+        fill={`url(#${charcoal})`}
+      />
       {/* double sigil border */}
       <rect
         x="1"
@@ -133,8 +147,16 @@ function PhotoFrame({
       {/* rune columns down the sides */}
       {sideRunes.map((y, i) => (
         <g key={i} opacity="0.75">
-          <path d={`M6 ${y} h3.5 M6 ${y} l1.75 2.4`} stroke="#c4b5fd" strokeWidth="1" />
-          <path d={`M90.5 ${y} h3.5 M90.5 ${y} l-1.75 2.4`} stroke="#c4b5fd" strokeWidth="1" />
+          <path
+            d={`M6 ${y} h3.5 M6 ${y} l1.75 2.4`}
+            stroke="#c4b5fd"
+            strokeWidth="1"
+          />
+          <path
+            d={`M90.5 ${y} h3.5 M90.5 ${y} l-1.75 2.4`}
+            stroke="#c4b5fd"
+            strokeWidth="1"
+          />
         </g>
       ))}
 
@@ -185,12 +207,22 @@ function PhotoFrame({
       />
 
       {/* sigil rule + eye under the print */}
-      <path d="M30 103.5 h13 M57 103.5 h13" stroke="#8b5cf6" strokeWidth="1" opacity="0.7" />
+      <path
+        d="M30 103.5 h13 M57 103.5 h13"
+        stroke="#8b5cf6"
+        strokeWidth="1"
+        opacity="0.7"
+      />
       <circle cx="50" cy="103.5" r="1.6" fill="none" stroke="#c4b5fd" />
       <circle cx="50" cy="103.5" r="0.7" fill="#a855f7" />
 
       {/* faint glitch double-lines, bottom-right */}
-      <path d="M72 110.5 h14 M74 114.5 h10 M71 118.5 h16" stroke="#7c3aed" strokeWidth="0.8" opacity="0.55" />
+      <path
+        d="M72 110.5 h14 M74 114.5 h10 M71 118.5 h16"
+        stroke="#7c3aed"
+        strokeWidth="0.8"
+        opacity="0.55"
+      />
     </svg>
   );
 }
@@ -214,15 +246,6 @@ export default function PhotoGallery() {
       className="relative w-full overflow-hidden bg-[#0a0618]"
     >
       <ButterflyBackground variant="gallery" />
-
-      <div className="relative mx-auto max-w-md px-6 pt-14 pb-6 text-center">
-        <h3 className="font-mono text-[10px] tracking-[0.4em] uppercase text-purple-soft/60 mb-2">
-          memory lane
-        </h3>
-        <p className="font-mono italic text-white/25 text-xs">
-          photos connected by a thread
-        </p>
-      </div>
 
       <div className="relative w-full h-[calc(min(280px,40vw)*13.4)]">
         <svg
@@ -311,4 +334,3 @@ export default function PhotoGallery() {
     </section>
   );
 }
-

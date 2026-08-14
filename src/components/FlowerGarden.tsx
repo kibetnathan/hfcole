@@ -1,10 +1,10 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import Flower2D from './Flower2D';
-import ButterflyBackground from './ButterflyBackground';
+import React from "react";
+import { motion } from "motion/react";
+import Flower2D from "./Flower2D";
+import ButterflyBackground from "./ButterflyBackground";
 
 export interface FlowerItem {
-  type: 'flower' | 'message';
+  type: "flower" | "message";
   left: string;
   top: string;
   size: number;
@@ -24,27 +24,27 @@ export interface FlowerItem {
 }
 
 const PALETTES = [
-  { petal: '#c4b5fd', petalDeep: '#8b5cf6', center: '#7c3aed' },
-  { petal: '#a78bfa', petalDeep: '#6d28d9', center: '#5b21b6' },
-  { petal: '#e9d5ff', petalDeep: '#a855f7', center: '#7c3aed' },
-  { petal: '#b794f6', petalDeep: '#7c3aed', center: '#f5f3ff' },
-  { petal: '#f3e8ff', petalDeep: '#c084fc', center: '#a855f7' },
-  { petal: '#d8b4fe', petalDeep: '#9333ea', center: '#6d28d9' },
+  { petal: "#c4b5fd", petalDeep: "#8b5cf6", center: "#7c3aed" },
+  { petal: "#a78bfa", petalDeep: "#6d28d9", center: "#5b21b6" },
+  { petal: "#e9d5ff", petalDeep: "#a855f7", center: "#7c3aed" },
+  { petal: "#b794f6", petalDeep: "#7c3aed", center: "#f5f3ff" },
+  { petal: "#f3e8ff", petalDeep: "#c084fc", center: "#a855f7" },
+  { petal: "#d8b4fe", petalDeep: "#9333ea", center: "#6d28d9" },
 ];
 
 const MESSAGES: { left: string; top: string; delay: number; size: number }[] = [
-  { left: '5%', top: '3%', delay: 0, size: 18 },
-  { left: '46%', top: '12%', delay: 0.05, size: 22 },
-  { left: '12%', top: '26%', delay: 0.1, size: 15 },
-  { left: '70%', top: '32%', delay: 0.12, size: 20 },
-  { left: '30%', top: '42%', delay: 0.16, size: 17 },
-  { left: '60%', top: '52%', delay: 0.2, size: 22 },
-  { left: '8%', top: '60%', delay: 0.24, size: 16 },
-  { left: '82%', top: '66%', delay: 0.26, size: 19 },
-  { left: '42%', top: '76%', delay: 0.3, size: 15 },
-  { left: '16%', top: '88%', delay: 0.34, size: 21 },
-  { left: '66%', top: '90%', delay: 0.38, size: 17 },
-  { left: '88%', top: '44%', delay: 0.28, size: 18 },
+  { left: "5%", top: "3%", delay: 0, size: 18 },
+  { left: "46%", top: "12%", delay: 0.05, size: 22 },
+  { left: "12%", top: "26%", delay: 0.1, size: 15 },
+  { left: "70%", top: "32%", delay: 0.12, size: 20 },
+  { left: "30%", top: "42%", delay: 0.16, size: 17 },
+  { left: "60%", top: "52%", delay: 0.2, size: 22 },
+  { left: "8%", top: "60%", delay: 0.24, size: 16 },
+  { left: "82%", top: "66%", delay: 0.26, size: 19 },
+  { left: "42%", top: "76%", delay: 0.3, size: 15 },
+  { left: "16%", top: "88%", delay: 0.34, size: 21 },
+  { left: "66%", top: "90%", delay: 0.38, size: 17 },
+  { left: "88%", top: "44%", delay: 0.28, size: 18 },
 ];
 
 function makeRng(seed: number) {
@@ -73,7 +73,7 @@ function buildFlowers(): FlowerItem[] {
 
     const palette = PALETTES[Math.floor(rng() * PALETTES.length)];
     flowers.push({
-      type: 'flower',
+      type: "flower",
       left: `${left.toFixed(1)}%`,
       top: `${top.toFixed(1)}%`,
       size: 42 + rng() * 86,
@@ -95,18 +95,21 @@ function buildFlowers(): FlowerItem[] {
 
 const FIELD = buildFlowers();
 
-const flowerWidth = (size: number) => `min(${size}px, ${Math.round((size / 375) * 100)}vw)`;
+const flowerWidth = (size: number) =>
+  `min(${size}px, ${Math.round((size / 375) * 100)}vw)`;
 
 export default function FlowerGarden() {
   return (
-    <section id="garden" className="relative w-full overflow-hidden bg-[#0a0618]">
+    <section
+      id="garden"
+      className="relative w-full overflow-hidden bg-[#0a0618]"
+    >
       <ButterflyBackground variant="garden" />
 
       <div className="relative mx-auto max-w-md px-6 pt-14 pb-10 text-center">
         <h3 className="font-mono text-[10px] tracking-[0.4em] uppercase text-purple-soft/60 mb-2">
           keep scrolling
         </h3>
-        <p className="font-mono italic text-white/25 text-xs">the garden keeps blooming</p>
       </div>
 
       <div className="relative h-[200vh] w-full">
@@ -116,7 +119,7 @@ export default function FlowerGarden() {
             initial={{ opacity: 0, y: 48, scale: 0.5 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.9, ease: 'easeOut' }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
             className="absolute"
             style={{ left: item.left, top: item.top }}
           >
@@ -150,7 +153,7 @@ export default function FlowerGarden() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 1, delay: m.delay, ease: 'easeOut' }}
+            transition={{ duration: 1, delay: m.delay, ease: "easeOut" }}
             className="absolute"
             style={{ left: m.left, top: m.top }}
           >
@@ -166,3 +169,4 @@ export default function FlowerGarden() {
     </section>
   );
 }
+
