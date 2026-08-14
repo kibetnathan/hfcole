@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Lock, ChevronDown } from "lucide-react";
+
+const PASSCODE = "COLGATE";
 import FlowerScene3D from "./components/FlowerScene3D";
 import ButterflyBackground from "./components/ButterflyBackground";
 import FlowerGarden from "./components/FlowerGarden";
@@ -37,17 +39,22 @@ const Typewriter = ({
 export default function App() {
   const [stage, setStage] = useState<"console" | "reveal">("console");
   const [consoleFinished, setConsoleFinished] = useState(false);
+  const [code, setCode] = useState("");
+  const [error, setError] = useState(false);
 
-  const handleReveal = useCallback(() => {
-    if (stage === "console" && consoleFinished) {
+  const tryUnlock = (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (code === PASSCODE) {
       setStage("reveal");
+    } else {
+      setError(true);
     }
-  }, [stage, consoleFinished]);
+  };
 
   return (
     <div
-      onClick={handleReveal}
-      className={`relative min-h-screen w-full flex items-center justify-center bg-[#08060f] selection:bg-purple-deep/30 ${stage === "console" && consoleFinished ? "cursor-pointer" : ""}`}
+      className={`relative min-h-screen w-full flex items-center justify-center bg-[#08060f] selection:bg-purple-deep/30`}
     >
       <div className="scanline" />
 
@@ -93,27 +100,55 @@ export default function App() {
                     {">"} One encrypted package found for you.
                   </p>
 
-                  <button
-                    id="decrypt-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setStage("reveal");
-                    }}
-                    className="group flex items-center gap-3 px-6 py-3 border border-purple-deep/30 bg-purple-deep/5 hover:bg-purple-deep/10 text-purple-soft transition-all duration-300 pointer-events-auto"
+                  <form
+                    onSubmit={tryUnlock}
+                    className="pt-6 w-full flex flex-col items-start gap-5"
                   >
-                    <Lock
-                      size={16}
-                      className="group-hover:rotate-12 transition-transform"
-                    />
-                    <span className="font-mono tracking-widest uppercase text-xs">
-                      Decrypt Message
-                    </span>
-                    <span className="terminal-cursor" />
-                  </button>
+                    <label
+                      htmlFor="passcode"
+                      className="text-[10px] uppercase tracking-[0.3em] text-purple-soft/50"
+                    >
+                      enter passcode to decrypt
+                    </label>
 
-                  <p className="text-[10px] text-white/20 animate-pulse">
-                    (or just click anywhere)
-                  </p>
+                    <div className="w-full max-w-xs flex items-center gap-2">
+                      <span className="text-purple-soft/70">{"->"}</span>
+                      <input
+                        id="passcode"
+                        type="text"
+                        value={code}
+                        onChange={(e) => {
+                          setCode(e.target.value.toUpperCase());
+                          setError(false);
+                        }}
+                        placeholder="PASSCODE"
+                        autoCapitalize="characters"
+                        autoComplete="off"
+                        spellCheck={false}
+                        className="flex-1 bg-transparent border-b border-purple-deep/40 focus:border-purple-soft outline-none py-2 font-mono tracking-[0.35em] uppercase text-purple-soft placeholder:text-white/15"
+                      />
+                    </div>
+
+                    {error && (
+                      <p className="text-red-400/90 text-xs font-mono">
+                        access denied ; invalid passcode
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      className="group flex items-center gap-3 px-6 py-3 border border-purple-deep/30 bg-purple-deep/5 hover:bg-purple-deep/10 text-purple-soft transition-all duration-300 pointer-events-auto"
+                    >
+                      <Lock
+                        size={16}
+                        className="group-hover:rotate-12 transition-transform"
+                      />
+                      <span className="font-mono tracking-widest uppercase text-xs">
+                        Decrypt Message
+                      </span>
+                      <span className="terminal-cursor" />
+                    </button>
+                  </form>
                 </motion.div>
               )}
             </div>
@@ -142,6 +177,8 @@ export default function App() {
                 <motion.button
                   onClick={(e) => {
                     e.stopPropagation();
+                    setCode("");
+                    setError(false);
                     setStage("console");
                   }}
                   className="text-white/20 hover:text-white/60 transition-colors uppercase text-[10px] tracking-widest font-mono"
