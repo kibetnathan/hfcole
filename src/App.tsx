@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Lock, ChevronDown } from 'lucide-react';
 import FlowerScene3D from './components/FlowerScene3D';
 import FlowerGarden from './components/FlowerGarden';
+import PhotoGallery from './components/PhotoGallery';
 import TikTokDM from './components/TikTokDM';
 
 const Typewriter = ({ text, delay = 50, onComplete }: { text: string, delay?: number, onComplete?: () => void }) => {
@@ -162,6 +163,7 @@ export default function App() {
             </section>
 
             <FlowerGarden />
+            <PhotoGallery />
             <TikTokDM />
           </motion.div>
         )}
