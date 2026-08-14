@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Terminal, Lock, Heart as HeartIcon, Sparkles } from 'lucide-react';
 import TextHeart from './components/TextHeart';
+import FlowerScene3D from './components/FlowerScene3D';
 
 const Typewriter = ({ text, delay = 50, onComplete }: { text: string, delay?: number, onComplete?: () => void }) => {
   const [currentText, setCurrentText] = useState("");
@@ -106,42 +107,44 @@ export default function App() {
             key="reveal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="relative w-full h-screen flex items-center justify-center overflow-hidden"
+            className="relative w-full min-h-screen overflow-x-hidden"
           >
-            <TextHeart />
-            
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 3, duration: 1.5 }}
-              className="z-20 text-center"
-            >
-              <h2 className="text-purple-deep font-mono text-xl tracking-[0.3em] uppercase glow-text mb-2">
-                Decrypted
-              </h2>
-              <div className="w-12 h-px bg-purple-deep/30 mx-auto mb-8" />
-              
-              <motion.button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setStage('console');
-                }}
-                className="text-white/20 hover:text-white/60 transition-colors uppercase text-[10px] tracking-widest font-mono"
-              >
-                Re-encrypt
-              </motion.button>
-            </motion.div>
+            <section className="relative h-svh min-h-[560px] w-full flex items-center justify-center overflow-hidden">
+              <FlowerScene3D />
 
-            {/* Subtle tech overlays */}
-            <div className="absolute top-8 left-8 text-[10px] font-mono text-white/10 uppercase tracking-widest space-y-1">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 1.2, duration: 1.5 }}
+                className="z-20 text-center px-6"
+              >
+                <h2 className="text-purple-deep font-mono text-xl tracking-[0.3em] uppercase glow-text mb-2">
+                  Decrypted
+                </h2>
+                <div className="w-12 h-px bg-purple-deep/30 mx-auto mb-8" />
+
+                <motion.button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setStage('console');
+                  }}
+                  className="text-white/20 hover:text-white/60 transition-colors uppercase text-[10px] tracking-widest font-mono"
+                >
+                  Re-encrypt
+                </motion.button>
+              </motion.div>
+
+              {/* Subtle tech overlays */}
+              <div className="absolute top-8 left-4 sm:left-8 text-[10px] font-mono text-white/10 uppercase tracking-widest space-y-1">
                 <div>ln: 420</div>
                 <div>id: 0xDEADBEEF</div>
                 <div>type: organic_emotion</div>
-            </div>
-            
-            <div className="absolute bottom-8 right-8 text-[10px] font-mono text-white/10 uppercase tracking-widest">
-                heart_reveal // success
-            </div>
+              </div>
+
+              <div className="absolute bottom-8 right-4 sm:right-8 text-[10px] font-mono text-white/10 uppercase tracking-widest">
+                flower_reveal // success
+              </div>
+            </section>
           </motion.div>
         )}
       </AnimatePresence>
