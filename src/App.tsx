@@ -35,7 +35,7 @@ export default function App() {
   return (
     <div 
       onClick={handleReveal}
-      className={`relative min-h-screen w-full flex items-center justify-center bg-[#050505] selection:bg-pink-deep/30 ${stage === 'console' && consoleFinished ? 'cursor-pointer' : ''}`}
+      className={`relative min-h-screen w-full flex items-center justify-center bg-[#08060f] selection:bg-purple-deep/30 ${stage === 'console' && consoleFinished ? 'cursor-pointer' : ''}`}
     >
       <div className="scanline" />
       
@@ -49,7 +49,7 @@ export default function App() {
             className="w-full max-w-2xl p-8 font-mono text-sm md:text-base text-white/80"
           >
             <div className="space-y-2">
-              <div className="flex gap-2 text-pink-soft/60">
+              <div className="flex gap-2 text-purple-soft/60">
                 <span>[system]</span>
                 <Typewriter 
                   text="Initializing heart.PROTOCOL_v2.0..." 
@@ -87,7 +87,7 @@ export default function App() {
                       e.stopPropagation();
                       setStage('reveal');
                     }}
-                    className="group flex items-center gap-3 px-6 py-3 border border-pink-deep/30 bg-pink-deep/5 hover:bg-pink-deep/10 text-pink-soft transition-all duration-300 pointer-events-auto"
+                    className="group flex items-center gap-3 px-6 py-3 border border-purple-deep/30 bg-purple-deep/5 hover:bg-purple-deep/10 text-purple-soft transition-all duration-300 pointer-events-auto"
                   >
                     <Lock size={16} className="group-hover:rotate-12 transition-transform" />
                     <span className="font-mono tracking-widest uppercase text-xs">Decrypt Message</span>
@@ -116,10 +116,10 @@ export default function App() {
               transition={{ delay: 3, duration: 1.5 }}
               className="z-20 text-center"
             >
-              <h2 className="text-pink-deep font-mono text-xl tracking-[0.3em] uppercase glow-text mb-2">
+              <h2 className="text-purple-deep font-mono text-xl tracking-[0.3em] uppercase glow-text mb-2">
                 Decrypted
               </h2>
-              <div className="w-12 h-px bg-pink-deep/30 mx-auto mb-8" />
+              <div className="w-12 h-px bg-purple-deep/30 mx-auto mb-8" />
               
               <motion.button
                 onClick={(e) => {

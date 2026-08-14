@@ -6,29 +6,29 @@
   --font-mono: "Fira Code", monospace;
   --font-display: "Space Grotesk", sans-serif;
   
-  --color-pink-soft: #ff8fb1;
-  --color-pink-deep: #ff4d6d;
-  --color-brand-red: #ff003c;
+  --color-purple-soft: #c4b5fd;
+  --color-purple-deep: #8b5cf6;
+  --color-purple-brand: #7c3aed;
 }
 
 @layer base {
   body {
-    @apply bg-[#050505] text-white selection:bg-brand-red/30;
+    @apply bg-[#08060f] text-white selection:bg-purple-brand/30;
   }
 }
 
 .terminal-cursor {
-  border-right: 2px solid #ff4d6d;
+  border-right: 2px solid #8b5cf6;
   animation: blink 1s step-end infinite;
 }
 
 @keyframes blink {
   from, to { border-color: transparent; }
-  50% { border-color: #ff4d6d; }
+  50% { border-color: #8b5cf6; }
 }
 
 .glow-text {
-  text-shadow: 0 0 10px rgba(255, 77, 109, 0.5), 0 0 20px rgba(255, 77, 109, 0.3);
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.5), 0 0 20px rgba(139, 92, 246, 0.3);
 }
 
 .scanline {
